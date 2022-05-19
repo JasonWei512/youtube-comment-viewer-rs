@@ -2,6 +2,8 @@
 
 A command line tool to display comments of a YouTube video.
 
+[Download](https://github.com/JasonWei512/youtube-comment-viewer-rs/releases/latest)
+
 
 ## Before using
 

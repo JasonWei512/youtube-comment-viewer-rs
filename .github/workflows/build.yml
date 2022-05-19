@@ -1,0 +1,67 @@
+name: build
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  x86_64-pc-windows-msvc:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Test
+      run: cargo test --target x86_64-pc-windows-msvc --verbose
+
+    - name: Build
+      run: cargo build --release --target x86_64-pc-windows-msvc --verbose
+
+    - name: Upload compiled binary
+      uses: actions/upload-artifact@v3.0.0
+      with:
+        name: youtube_comment_viewer-x86_64-pc-windows-msvc
+        path: target/x86_64-pc-windows-msvc/release/youtube_comment_viewer.exe
+
+  x86_64-unknown-linux-gnu:
+    runs-on: ubuntu-18.04
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Test
+      run: cargo test --target x86_64-unknown-linux-gnu --verbose
+
+    - name: Build
+      run: cargo build --release --target x86_64-unknown-linux-gnu --verbose
+
+    - name: Upload compiled binary
+      uses: actions/upload-artifact@v3.0.0
+      with:
+        name: youtube_comment_viewer-x86_64-unknown-linux-gnu
+        path: target/x86_64-unknown-linux-gnu/release/youtube_comment_viewer
+
+  aarch64-unknown-linux-musl:
+    runs-on: ubuntu-latest
+    container: messense/rust-musl-cross:aarch64-musl
+
+    steps:
+    - uses: actions/checkout@v3
+
+    # GitHub Action currently does not support ARM64
+    # - name: Test
+    #   run: cargo test --target aarch64-unknown-linux-musl --features vendored-openssl --verbose
+
+    - name: Build
+      run: cargo build --release --target aarch64-unknown-linux-musl --features vendored-openssl --verbose
+
+    - name: Upload compiled binary
+      uses: actions/upload-artifact@v3.0.0
+      with:
+        name: youtube_comment_viewer-aarch64-unknown-linux-musl
+        path: target/aarch64-unknown-linux-musl/release/youtube_comment_viewer
